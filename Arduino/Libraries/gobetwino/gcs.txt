@@ -1,0 +1,12 @@
+'Predefined commands that has no parametres or only external parametres
+#S|T|TIME|[]#
+#S|D|DATE|[]#
+#S|SENDK|SENDK|[$1&$2]#
+
+
+
+#S|READA|RFLIN|[C:\Users\Israel\Dropbox\master\RoboLegCode\RoboLeg_SkatingMode\Control_Data\Ao&$1]#
+#S|READB|RFLIN|[C:\Users\Israel\Dropbox\master\RoboLegCode\RoboLeg_SkatingMode\Control_Data\Bo&$1]#
+#S|READC|RFLIN|[C:\Users\Israel\Dropbox\master\RoboLegCode\RoboLeg_SkatingMode\Control_Data\Co&$1]#
+#S|READK|RFLIN|[C:\Users\Israel\Dropbox\master\RoboLegCode\RoboLeg_SkatingMode\Control_Data\K&$1]#
+#S|READL|RFLIN|[C:\Users\Israel\Dropbox\master\RoboLegCode\RoboLeg_SkatingMode\Control_Data\L&$1]#
