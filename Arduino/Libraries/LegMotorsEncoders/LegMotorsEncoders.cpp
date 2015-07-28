@@ -98,7 +98,7 @@ void LegMotorsEncoders::pin_setup(boolean Initial_Linear_Position) {
 
 void LegMotorsEncoders::ResetEncoder(int nEncoderIndex)
 {
-  int nResetPin;
+  short nResetPin;
   switch(nEncoderIndex)
   {
     case 1:
@@ -121,7 +121,7 @@ void LegMotorsEncoders::ResetEncoder(int nEncoderIndex)
   delay(50);
 }
 
-float LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
+long LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
 {
 //  unsigned long T0, T1;
 //  T0 = micros();
@@ -160,13 +160,13 @@ float LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
     l_byte = l_byte|(val<<i);
   }
   // add bytes
-  output = (h_byte<<8)|l_byte;
+  output = (h_byte<<8)|l_byte;                          
        
   // Reset inhibition on encoder buffer
   digitalWrite(this->OE[nEncoderIndex-1], HIGH);
-
-  deg = float(output)*360.0/float(this->CPR[nEncoderIndex-1]);
-  return deg;
+  
+  //deg = float(output)*360.0/float(this->CPR[nEncoderIndex-1]); 
+  return output;                                               
 }
 
 void LegMotorsEncoders::M1_FWDaccel(float PWM0, float PWM1, float time) {
@@ -178,8 +178,8 @@ void LegMotorsEncoders::M1_FWDaccel(float PWM0, float PWM1, float time) {
   }
 }
 
-void LegMotorsEncoders::M1_BWDaccel(float PWM0, float PWM1, float time) {
-  float numsteps=10.0;
+void LegMotorsEncoders::M1_BWDaccel(float PWM0, float PWM1, float time) { //BREAKPOINT BREAKPOIT
+  short int numsteps=10;
   float timestep=time/numsteps;
   for (int i=1; i<=numsteps; i++) {
     this->M1_BWD(PWM1+(1-(float)i/numsteps)*(PWM0-PWM1));

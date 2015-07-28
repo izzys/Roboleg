@@ -1,5 +1,6 @@
 //#include <LegMotorsEncodersV2_1.ino>
-#include <MsTimer2.h>
+//#include <MsTimer2.h>   /// TODO: timer2 -> timer1
+#include <TimerOne.h>
 //#include "IEEE754tools.h"
 #include "LegMotorsEncoders.h"
 #include "TimerThree.h"
@@ -10,32 +11,33 @@
 // User defined parameters:
 /*=========================================*/
 float  firstfreq = 1;//first frequency
-float  lastfreq = 1;//first frequency
-float lasttime = 500;
-float amplitude = 255; 
+float  lastfreq = 1;//last frequenc 
+unsigned long lasttime = 500e6;  // in micro seconds
+short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
-float Loop_freqency = 250;// Set here control cycle frequency (Hz)
-float Sample_freqency = 10 ; // Set here sample frequency (Hz)
+short Loop_freqency = 200;// Set here control cycle frequency (Hz)
+short Sample_freqency = 200 ; // Set here sample frequency (Hz)
 /*=========================================*/
+
 
 boolean running;//used to test if motor is running
 
-unsigned int Control_Period = 1000 / Loop_freqency; // Control cycle period (mili-seconds)
-unsigned int Sample_Period  = 1000 / Sample_freqency; // Sample period (mili-seconds)
+unsigned int Control_Period = 1e6 / Loop_freqency; // Control cycle period (micro-seconds) 
+unsigned int Sample_Period  = 1e6 / Sample_freqency; // Sample period (micro-seconds)      
 volatile int Control_loop_counter;
 volatile int Control_loop_counter_max;
 
-float T ; //Time
+unsigned long T ; //Time
 
-float sync_time = 0.0;
+unsigned long sync_time = 0;
 float sin_wave = 0;
 volatile int first_loop =1;
 volatile int first_stop = 0;
 
-float enc1;
-float enc2;
-float comm;
-float comm_output;
+long enc1;
+long enc2;
+short comm;
+short comm_output;
 float freq;
 
 LegMotorsEncoders LME;
@@ -48,7 +50,6 @@ void setup()
   Serial.begin(115200);
   delay(100);
  
-  
   // Set timer 3 PWM:
   Timer3.initialize(50); //im micro secons units. (50 micro seconds == 20 Khz)
   
@@ -61,8 +62,12 @@ void setup()
 
 
 
-  MsTimer2::set(Control_Period, LoopAction);
-  Control_loop_counter_max = Loop_freqency / Sample_freqency;
+
+  Timer1.initialize(Control_Period);
+  
+
+  //Timer1.set(Control_Period, LoopAction);                                      /// TODO: timer2 -> timer1
+  Control_loop_counter_max = (short) ( Loop_freqency / Sample_freqency );
   
 
 }
@@ -82,22 +87,27 @@ void loop(){//Send the motor commands to move each time through this loop
 
       Serial.println("starting......");
       Control_loop_counter = 0;
-      T = 0.0;
-      first_loop = 0;
-      sync_time = millis()*1e-3;
-      MsTimer2::start();
+      T = 0;
+      first_loop = 0; 
+      sync_time = micros();    /// TODO: mili -> micro
+      
+   //   Timer1.start();                        /// TODO: timer2 -> timer1
+   
+      Timer1.attachInterrupt(LoopAction);
     }
     
     interrupts();
-
+                
     break;
 
    case 0: //Stop motors and reset
    
       noInterrupts();
       if (first_stop) {
-
-        MsTimer2::stop();
+        
+        Timer1.detachInterrupt();
+        
+       // Timer1.stop();              /// TODO: timer2 -> timer1
         
         LME.M1_COAST();
         LME.M2_COAST();
@@ -129,16 +139,16 @@ void LoopAction() {
     enc2 = -LME.ReadEncoder(2);
     
     //Set the time for each iteration through the motor commands
-    T =  millis()*1e-3 - sync_time ;
+    T =  micros() - sync_time ;    /// TODO: mili -> micro
     
     //The sin wave to send;
     freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-    sin_wave = sin(2*PI*freq*T);
-    comm = amplitude*sin_wave; //and set the motor command to that point
+    sin_wave = sin(2*PI*freq*T*1e-6);
+    comm = (short) (amplitude*sin_wave); //and set the motor command to that point
 
     //If the leg gets to high-->emergency stop
    
-    if((enc2)>75 || (enc2<-75) || abs(enc1-enc2)>90)     
+    if((enc2)>3000 || (enc2<-3000) || abs(enc1-enc2)>3600)     // 3600 = 90*; 3000 = 75*
     {
       Serial.println("emergency stop");
       comm_output = 0;
@@ -171,6 +181,7 @@ void LoopAction() {
   
 
 }
+
 
 void Sample_Angle_and_Send() //Based on sample frequency set above, send data to MATLAB
 {

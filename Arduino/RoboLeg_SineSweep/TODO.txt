@@ -1,0 +1,4 @@
+1. Change variable of float to integer
+2. Change milisecond to microsecond (to be more accurate)
+3. Less commands, less print.
+4. Read which method is more productive (Switch / If statement)

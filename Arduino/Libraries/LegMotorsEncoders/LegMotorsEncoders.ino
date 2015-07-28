@@ -1,7 +1,7 @@
 /*
   LegMotorsEncoders.ino - Functions and pin definitions for blue box of Roboleg.
   Created by Eric Sidorov and Jonathan Spitz. (2013)
-  Last edited by Israel Schallheim: 26/3/2015
+  Last edited by Israel Schallheim: 28/7/2015
 */
 #include "Arduino.h"
 #include "LegMotorsEncoders.h"
@@ -98,7 +98,7 @@ void LegMotorsEncoders::pin_setup(boolean Initial_Linear_Position) {
 
 void LegMotorsEncoders::ResetEncoder(int nEncoderIndex)
 {
-  int nResetPin;
+  short nResetPin;
   switch(nEncoderIndex)
   {
     case 1:
@@ -121,7 +121,7 @@ void LegMotorsEncoders::ResetEncoder(int nEncoderIndex)
   delay(50);
 }
 
-float LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
+long LegMotorsEncoders::ReadEncoder(int nEncoderIndex)  
 {
 //  unsigned long T0, T1;
 //  T0 = micros();
@@ -160,14 +160,16 @@ float LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
     l_byte = l_byte|(val<<i);
   }
   // add bytes
-  output = (h_byte<<8)|l_byte;
+  output = (h_byte<<8)|l_byte;                          
        
   // Reset inhibition on encoder buffer
   digitalWrite(this->OE[nEncoderIndex-1], HIGH);
 
-  deg = float(output)*360.0/float(this->CPR[nEncoderIndex-1]);
-  return deg;
+  //deg = float(output)*360.0/float(this->CPR[nEncoderIndex-1]); 
+  //return deg;                                                
+  return output; 
 }
+
 
 void LegMotorsEncoders::M1_FWDaccel(float PWM0, float PWM1, float time) {
   float numsteps=10.0;

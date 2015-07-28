@@ -17,8 +17,8 @@
         // methods:
         LegMotorsEncoders();
 	void  pin_setup(boolean Initial_Linear_Position) ;
-        void ResetEncoder(int nEncoderIndex);
-        float ReadEncoder(int nEncoderIndex);
+        void ResetEncoder(int nEncoderIndex);    
+        long ReadEncoder(int nEncoderIndex);
         void M1_FWDaccel(float PWM0, float PWM1, float time);
         void M1_BWDaccel(float PWM0, float PWM1, float time);
         void M1_FWD(float PWM_VALUE);
