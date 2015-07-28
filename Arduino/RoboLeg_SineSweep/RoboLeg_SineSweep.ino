@@ -1,5 +1,5 @@
 //#include <LegMotorsEncodersV2_1.ino>
-#include "MsTimer2.h"
+#include <MsTimer2.h>
 //#include "IEEE754tools.h"
 #include "LegMotorsEncoders.h"
 #include "TimerThree.h"
@@ -7,26 +7,25 @@
 #define MAX_PWM 255
 #define PI 3.14159265359
 
-// First values set to match those that MATLAB expects
+// User defined parameters:
 /*=========================================*/
-float  firstfreq = 0.01;//first frequency
-float  lastfreq = 3;//first frequency
+float  firstfreq = 1;//first frequency
+float  lastfreq = 1;//first frequency
 float lasttime = 500;
-float amplitude = 50; 
+float amplitude = 255; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
-float Loop_freqency = 500;// Set here control cycle frequency (Hz)
-float Sample_freqency = 100 ; // Set here sample frequency (Hz)
+float Loop_freqency = 250;// Set here control cycle frequency (Hz)
+float Sample_freqency = 10 ; // Set here sample frequency (Hz)
 /*=========================================*/
 
 boolean running;//used to test if motor is running
 
-unsigned int Control_Period = 1000 / Loop_freqency; // Control cycle period (micro-seconds)
-unsigned int Sample_Period  = 1000 / Sample_freqency; // Sample period (micro-seconds)
+unsigned int Control_Period = 1000 / Loop_freqency; // Control cycle period (mili-seconds)
+unsigned int Sample_Period  = 1000 / Sample_freqency; // Sample period (mili-seconds)
 volatile int Control_loop_counter;
 volatile int Control_loop_counter_max;
 
 float T ; //Time
-
 
 float sync_time = 0.0;
 float sin_wave = 0;
@@ -116,11 +115,10 @@ void loop(){//Send the motor commands to move each time through this loop
     LME.M2_COAST();
     break;
   }
-delay(1);
+
 }
 
 void LoopAction() {
-  
   
     if (T>=lasttime){
       state =0;
@@ -135,7 +133,6 @@ void LoopAction() {
     
     //The sin wave to send;
     freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-    
     sin_wave = sin(2*PI*freq*T);
     comm = amplitude*sin_wave; //and set the motor command to that point
 

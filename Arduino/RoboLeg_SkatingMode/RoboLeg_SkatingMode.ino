@@ -10,7 +10,7 @@
 #include "Controller.h"
 #include "MsTimer2.h"
 #include "TimerThree.h"
-#include "TimerOne.h"
+//#include "TimerOne.h"
 //1#include "FlexiTimer2.h"
 
 #define MAX_PWM 255
@@ -29,7 +29,7 @@ float ref_period = 0.8; // set here ref block period
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
 int linear_on = 0; // Set here if to shorten leg
 float Loop_freqency = 500;// Set here control cycle frequency (Hz)
-float Sample_freqency = 500 ; // Set here sample frequency (Hz)
+float Sample_freqency = 10 ; // Set here sample frequency (Hz)
 /*=========================================*/
 
 // Initialize globals:
