@@ -126,7 +126,7 @@ long LegMotorsEncoders::ReadEncoder(int nEncoderIndex)
 //  unsigned long T0, T1;
 //  T0 = micros();
   long output = 0x0;
-  float deg;
+//  float deg;
   byte h_byte = 0x0;
   byte l_byte = 0x0;
   int i = 0;

@@ -4,19 +4,20 @@
 //#include "IEEE754tools.h"
 #include "LegMotorsEncoders.h"
 #include "TimerThree.h"
+#include <math.h> 
 
 #define MAX_PWM 255
 #define PI 3.14159265359
 
 // User defined parameters:
 /*=========================================*/
-float  firstfreq = 1;//first frequency
-float  lastfreq = 1;//last frequenc 
-unsigned long lasttime = 500e6;  // in micro seconds
+float  firstfreq = 0.1;//first frequency
+float  lastfreq = 10;//last frequenc 
+unsigned long lasttime = 120e6;  // in micro seconds
 short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
-short Loop_freqency = 200;// Set here control cycle frequency (Hz)
-short Sample_freqency = 200 ; // Set here sample frequency (Hz)
+short Loop_freqency = 100;// Set here control cycle frequency (Hz)
+short Sample_freqency = 100 ; // Set here sample frequency (Hz)
 /*=========================================*/
 
 
@@ -143,7 +144,14 @@ void LoopAction() {
     
     //The sin wave to send;
     freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-    sin_wave = sin(2*PI*freq*T*1e-6);
+    //sin_wave = sin(2*PI*freq*T*1e-6);
+    float N=log(lastfreq/firstfreq)/log(2);
+//    Serial.println("HEREREREEEEREERERERRRREREREERRERE");
+//float test=pow(2,3.13345);
+// Serial.println(test);
+    float R=N/(lasttime*1e-6);
+   // Serial.println(lasttime);
+    sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-6))/(R*log(2)) )    );
     comm = (short) (amplitude*sin_wave); //and set the motor command to that point
 
     //If the leg gets to high-->emergency stop

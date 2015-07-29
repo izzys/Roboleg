@@ -1,7 +1,7 @@
 function [] = CB_Stop_serial()
 global  SERIAL
 
-fprintf(SERIAL, '0');
+fprintf(SERIAL, '0'); 
 %disp 'Serial closed'
 pause(0.1)
 

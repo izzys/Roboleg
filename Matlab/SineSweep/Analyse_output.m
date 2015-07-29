@@ -1,5 +1,5 @@
 function [] = Analyse_output()
-global h out_index out Sample_frequency save_data  previous_data_string load_previous_data Emergency_stop_flag
+global h out_index out Sample_frequency save_data  previous_data_string load_previous_data Emergency_stop_flag CPR
 %global h out_index out  Sample_frequency Furier_PLOT Sine_PLOT  Amp Phase save_data Save_Data_checkbox
 
 if save_data
@@ -31,11 +31,11 @@ end
 
 if ~isempty(out)
     
-start_intex = 3;
+start_intex = 2;
 if Emergency_stop_flag
     end_index = out_index-1;
 else
-     end_index = out_index-2;
+     end_index = out_index-1;
 end
 
 for j =start_intex:end_index
@@ -54,10 +54,10 @@ disp 'output done'
 % xlabel('Time [sec]')
 
 
-tvec = output_line(:,4);
-theta1 = output_line(:,1);
-theta2 = output_line(:,2);
-uvec = output_line(:,3);
+tvec = output_line(:,4)*1e-6;
+theta1 = output_line(:,1)*360/CPR; % TODO
+theta2 = output_line(:,2)*360/CPR;
+uvec = output_line(:,3); % PWM, Voltage, Command
 Delta = theta1-theta2;
 
 stairs(h.Sine_PLOT,tvec,theta1,'g','LineWidth',2) %Enc1
@@ -66,11 +66,13 @@ stairs(h.Sine_PLOT,tvec,uvec,'b','LineWidth',2) %Command
 stairs(h.Sine_PLOT,tvec,Delta,'c','LineWidth',2) %Delta
 
 legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
-%disp ' ======================'
+
 
 
 % Furier Analysis:
-Fs = Sample_frequency   ;  
+sample_diff = diff(tvec);
+Tmean = mean(sample_diff);
+Fs = 1/Tmean;  
 L = length(tvec);
 
 NFFT = 2^nextpow2(L); % Next power of 2 from length of y
@@ -93,6 +95,17 @@ Y2 = 2*abs(Yenc2(1:bin));
 Yu = 2*abs(Ycomm(1:bin));
 Yd = 2*abs(Ydelta(1:bin));
 
+% Plot single-sided amplitude spectrum.
+plot(h.Furier_PLOT,f,Y1,'g','LineWidth',2) ;
+plot(h.Furier_PLOT,f, Y2,'m','LineWidth',2) ;
+plot(h.Furier_PLOT,f,Yu ,'b','LineWidth',2) ;
+plot(h.Furier_PLOT,f,Yd ,'c','LineWidth',2) ;
+
+title(h.Furier_PLOT,'Single-Sided Amplitude Spectrum of Enc1,Enc2 and Command')
+xlabel(h.Furier_PLOT,'Frequency (Hz)')
+ylabel(h.Furier_PLOT,'|Y(f)|')
+legend(h.Furier_PLOT,'Enc1','Enc2','Comm','Delta')
+
 
 %Bode:
 Gain = Yd./Yu;
@@ -105,7 +118,6 @@ Phase = wrapToPi(Phase_chopped);
 % Phase = filter(b,a,Phase);
 
 bode_ind = find((0.1<f)&(f<3));
-
 Bode_color = [rand(1) rand(1) rand(1)];
 % figure(132)
 % subplot 211
@@ -129,12 +141,7 @@ Bode_color = [rand(1) rand(1) rand(1)];
 % save('Y2','Y2')
 % save('Yu','Yu')
 
-% Plot single-sided amplitude spectrum.
 
-plot(h.Furier_PLOT,f,Y1,'g','LineWidth',2) ;
-plot(h.Furier_PLOT,f, Y2,'m','LineWidth',2) ;
-plot(h.Furier_PLOT,f,Yu ,'b','LineWidth',2) ;
-plot(h.Furier_PLOT,f,Yd ,'c','LineWidth',2) ;
 
 % this_freq = output_line(5,5);
 % start_ind = find(f>this_freq/2, 1, 'first');
@@ -155,21 +162,18 @@ plot(h.Furier_PLOT,f,Yd ,'c','LineWidth',2) ;
 % disp ' Phase for this freq:'
 % disp(Phase)
 
-title(h.Furier_PLOT,'Single-Sided Amplitude Spectrum of Enc1,Enc2 and Command')
-xlabel(h.Furier_PLOT,'Frequency (Hz)')
-ylabel(h.Furier_PLOT,'|Y(f)|')
-legend(h.Furier_PLOT,'Enc1','Enc2','Comm','Delta')
+
 else
     
     disp 'Output is empty'
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-save('theta1','theta1')
-save('theta2','theta2')
-save('tvec','tvec')
-save('uvec','uvec')
-save('uvec','uvec')
+save('ExperimentData\theta1','theta1')
+save('ExperimentData\theta2','theta2')
+save('ExperimentData\tvec','tvec')
+save('ExperimentData\uvec','uvec')
+save('ExperimentData\uvec','uvec')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tvec_a = tvec;

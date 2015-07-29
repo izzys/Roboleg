@@ -1,8 +1,21 @@
 function Start_serial()
-global SERIAL out out_index COM_num serial_open
+global SERIAL out out_index COM_num serial_open STATUS_OK
+
+%if (SERIAL.available())
+
+% CHECK Serial Availablity
+STATUS_OK = false;
+s_info  = instrhwinfo('serial');
+s_list = s_info.AvailableSerialPorts;
+if(find(strcmp(s_list, COM_num)))
+    STATUS_OK = true;
+end; 
 
 % to find ports use: instrfind
-SERIAL = serial(COM_num, 'BaudRate', 115200);
+if(~STATUS_OK)
+    disp('Serial unavailable');
+else
+    SERIAL = serial(COM_num, 'BaudRate', 115200);
 
 %Continuously reads from the serial port
 SERIAL.ReadAsyncMode = 'continuous';
@@ -21,5 +34,9 @@ disp ' '
 
 out_index = 0;
 out = {};
+end;
+%else
+  %  disp 'Serial Busy'
+%end
 %Enter the state machine
 %serial_open = true;

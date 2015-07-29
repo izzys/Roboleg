@@ -10,35 +10,18 @@ disp 'Starting motor ...'
 fprintf(SERIAL, '1');
 Emergency_stop_flag =0;
 FreqDataIndex = 1;
-stopFreq = 1;
+
 
 while strcmp(SERIAL.Status, 'open')
 
 switch state
  
   case 1
-    if(freq<=stopFreq)
-        
-        
-         pause(5);
-%         Last_Data = out{out_index};
-%         Last_Data = str2num(Last_Data);
-%         freq = 2*Last_Data(5);
-%         disp(['Frequency: ' num2str(freq) ' [Hz]...'])
 
-    else
-
-        %if all the tests are completed, exit
-        state = 2;
-    end
-
-  case 2
-      
-   %Turn off motors
-   CB_Stop_motors();
-   CB_Stop_serial();
-   break
    
+         pause(5);
+
+ 
   case 3
       
    break
