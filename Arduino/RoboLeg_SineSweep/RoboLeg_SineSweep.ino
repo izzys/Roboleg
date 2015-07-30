@@ -150,7 +150,7 @@ void LoopAction() {
 //float test=pow(2,3.13345);
 // Serial.println(test);
     float R=N/(lasttime*1e-6);
-   // Serial.println(lasttime);
+   //1 Serial.println(lasttime);
     sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-6))/(R*log(2)) )    );
     comm = (short) (amplitude*sin_wave); //and set the motor command to that point
 
