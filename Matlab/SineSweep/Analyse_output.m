@@ -5,7 +5,7 @@ global h out_index out Sample_frequency save_data  previous_data_string load_pre
 if save_data
     
 Output_strc.out = out;
-Output_strc.Sample_frequency = Sample_frequency;
+%Output_strc.Sample_frequency = Sample_frequency;
 Output_strc.out_index = out_index;
 Output_strc.Emergency_stop_flag = Emergency_stop_flag;
 
@@ -21,7 +21,7 @@ if load_previous_data
 load(previous_data_string)
 out = Output_strc.out;
 out_index = Output_strc.out_index;
-Sample_frequency = Output_strc.Sample_frequency;
+%Sample_frequency = Output_strc.Sample_frequency;
 Emergency_stop_flag = Output_strc.Emergency_stop_flag;
 % out = Output_strc.out;
 % out_index = 1559;
@@ -54,7 +54,7 @@ disp 'output done'
 % xlabel('Time [sec]')
 
 
-tvec = output_line(:,4)*1e-6;
+tvec = output_line(:,4)*1e-3;
 theta1 = output_line(:,1)*360/CPR; % TODO
 theta2 = output_line(:,2)*360/CPR;
 uvec = output_line(:,3); % PWM, Voltage, Command
@@ -67,12 +67,11 @@ stairs(h.Sine_PLOT,tvec,Delta,'c','LineWidth',2) %Delta
 
 legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
 
-
-
 % Furier Analysis:
 sample_diff = diff(tvec);
-Tmean = mean(sample_diff);
-Fs = 1/Tmean;  
+Tmean = mean(sample_diff)
+
+Fs = 1/Tmean;
 L = length(tvec);
 
 NFFT = 2^nextpow2(L); % Next power of 2 from length of y
@@ -142,7 +141,8 @@ Bode_color = [rand(1) rand(1) rand(1)];
 % save('Yu','Yu')
 
 
-
+figure
+plot(sample_diff,'.')
 % this_freq = output_line(5,5);
 % start_ind = find(f>this_freq/2, 1, 'first');
 % 
