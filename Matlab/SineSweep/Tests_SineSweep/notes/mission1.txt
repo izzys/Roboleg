@@ -1,0 +1,21 @@
+3 experients for each input signal [ 3 Logeritmic signal & 3 lineer signal ]
+5 
+
+0.1 - 5,10
+
+
+*logeritmic is more slow then lineer.
+* Advantage of having long test, more time at each position -> more accurate
+
+[10 Hz - 4,6,8 minutes test]
+
+
+* Two different input. Logeritmic & linner.
+
+** different amplitude we chaking if the system linner --> how linner our system
+
+* folder of each test -> type of input, range frequcnies, input amplitude, length
+
+
+AFTER:
+* Each test, in three different amplitudes  [ 25, 50 75 100 ]

@@ -13,7 +13,7 @@
 /*=========================================*/
 float  firstfreq = 0.1;//first frequency
 float  lastfreq = 10;//last frequenc 
-unsigned long lasttime = 60*4e3;  // in millis seconds
+unsigned long lasttime = 60*1e3;  // in millis seconds
 short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
 short Loop_freqency = 200;// Set here control cycle frequency (Hz)
@@ -66,7 +66,6 @@ void setup()
 
   Timer1.initialize(Loop_Period);
 //  MsTimer2::set(Loop_Period, LoopAction);
- 
  // Loop_counter_max = (short) ( Loop_freqency / Sample_freqency );
   
 

@@ -64,7 +64,6 @@ stairs(h.Sine_PLOT,tvec,theta1,'g','LineWidth',2) %Enc1
 stairs(h.Sine_PLOT,tvec,theta2,'m','LineWidth',2) %Enc2
 stairs(h.Sine_PLOT,tvec,uvec,'b','LineWidth',2) %Command
 stairs(h.Sine_PLOT,tvec,Delta,'c','LineWidth',2) %Delta
-
 legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
 
 % Furier Analysis:
@@ -112,33 +111,34 @@ Phase_chopped = angle(Ycomm(1:bin))-angle(Ydelta(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
-% [b,a] = butter(1,0.05,'low');
-% Gain = filter(b,a,Gain);
-% Phase = filter(b,a,Phase);
+[b,a] = butter(1,0.02,'low');
+Gain = filter(b,a,Gain);
+Phase = filter(b,a,Phase);
 
-bode_ind = find((0.1<f)&(f<3));
+bode_ind = find((0.1<f)&(f<10));
 Bode_color = [rand(1) rand(1) rand(1)];
-% figure(132)
-% subplot 211
-% semilogx(f(bode_ind),20*log10(Gain(bode_ind)),'Color',Bode_color,'LineWidth',2)
-% hold on
-% ylabel('Gain')
-% grid on
-% 
-% subplot 212
-% semilogx(f(bode_ind),180*Phase(bode_ind)/pi,'Color',Bode_color,'LineWidth',2)
-% hold on
-% xlabel('frequency [Hz]')
-% ylabel('Phase [deg]')
-% grid on
+
+figure(132)
+subplot 211
+semilogx(f(bode_ind),20*log10(Gain(bode_ind)),'Color',Bode_color,'LineWidth',2)
+hold on
+ylabel('Gain')
+grid on
+
+subplot 212
+semilogx(f(bode_ind),180*Phase(bode_ind)/pi,'Color',Bode_color,'LineWidth',2)
+hold on
+xlabel('frequency [Hz]')
+ylabel('Phase [deg]')
+grid on
 
 % Super title (over subplots):
 % ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0  1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 % text(0.55, 0.98,'Bode plot ','HorizontalAlignment','center','VerticalAlignment', 'top','FontSize',15)
-% save('f','f')
-% save('Y1','Y1')
-% save('Y2','Y2')
-% save('Yu','Yu')
+save('ExperimentData\f','f')
+save('ExperimentData\Y1','Y1')
+save('ExperimentData\Y2','Y2')
+save('ExperimentData\Yu','Yu')
 
 
 figure
