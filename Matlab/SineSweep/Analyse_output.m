@@ -106,17 +106,27 @@ legend(h.Furier_PLOT,'Enc1','Enc2','Comm','Delta')
 
 
 %Bode:
+Bode_color = [rand(1) rand(1) rand(1)];
+
+
 Gain = Yd./Yu;
 Phase_chopped = angle(Ycomm(1:bin))-angle(Ydelta(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
-[b,a] = butter(1,0.02,'low');
-Gain = filter(b,a,Gain);
-Phase = filter(b,a,Phase);
+[b,a] = butter(2,0.1,'low');
+filt = tf(b,a,Tmean);
+figure(2)
+bode(filt)
+% 
+Gain = filtfilt(b,a,Gain);
+Phase = filtfilt(b,a,Phase);
+
+% Gain = filter(b,a,Gain);
+% Phase = filter(b,a,Phase);
 
 bode_ind = find((0.1<f)&(f<10));
-Bode_color = [rand(1) rand(1) rand(1)];
+
 
 figure(132)
 subplot 211
