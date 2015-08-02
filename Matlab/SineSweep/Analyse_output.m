@@ -5,7 +5,7 @@ global h out_index out Sample_frequency save_data  previous_data_string load_pre
 if save_data
     
 Output_strc.out = out;
-Output_strc.Sample_frequency = Sample_frequency;
+%Output_strc.Sample_frequency = Sample_frequency;
 Output_strc.out_index = out_index;
 Output_strc.Emergency_stop_flag = Emergency_stop_flag;
 
@@ -21,7 +21,7 @@ if load_previous_data
 load(previous_data_string)
 out = Output_strc.out;
 out_index = Output_strc.out_index;
-Sample_frequency = Output_strc.Sample_frequency;
+%Sample_frequency = Output_strc.Sample_frequency;
 Emergency_stop_flag = Output_strc.Emergency_stop_flag;
 % out = Output_strc.out;
 % out_index = 1559;
@@ -54,7 +54,7 @@ disp 'output done'
 % xlabel('Time [sec]')
 
 
-tvec = output_line(:,4)*1e-6;
+tvec = output_line(:,4)*1e-3;
 theta1 = output_line(:,1)*360/CPR; % TODO
 theta2 = output_line(:,2)*360/CPR;
 uvec = output_line(:,3); % PWM, Voltage, Command
@@ -64,15 +64,13 @@ stairs(h.Sine_PLOT,tvec,theta1,'g','LineWidth',2) %Enc1
 stairs(h.Sine_PLOT,tvec,theta2,'m','LineWidth',2) %Enc2
 stairs(h.Sine_PLOT,tvec,uvec,'b','LineWidth',2) %Command
 stairs(h.Sine_PLOT,tvec,Delta,'c','LineWidth',2) %Delta
-
 legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
-
-
 
 % Furier Analysis:
 sample_diff = diff(tvec);
-Tmean = mean(sample_diff);
-Fs = 1/Tmean;  
+Tmean = mean(sample_diff)
+
+Fs = 1/Tmean;
 L = length(tvec);
 
 NFFT = 2^nextpow2(L); % Next power of 2 from length of y
@@ -108,41 +106,53 @@ legend(h.Furier_PLOT,'Enc1','Enc2','Comm','Delta')
 
 
 %Bode:
+Bode_color = [rand(1) rand(1) rand(1)];
+
+
 Gain = Yd./Yu;
 Phase_chopped = angle(Ycomm(1:bin))-angle(Ydelta(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
-% [b,a] = butter(1,0.05,'low');
+[b,a] = butter(2,0.1,'low');
+filt = tf(b,a,Tmean);
+figure(2)
+bode(filt)
+% 
+Gain = filtfilt(b,a,Gain);
+Phase = filtfilt(b,a,Phase);
+
 % Gain = filter(b,a,Gain);
 % Phase = filter(b,a,Phase);
 
-bode_ind = find((0.1<f)&(f<3));
-Bode_color = [rand(1) rand(1) rand(1)];
-% figure(132)
-% subplot 211
-% semilogx(f(bode_ind),20*log10(Gain(bode_ind)),'Color',Bode_color,'LineWidth',2)
-% hold on
-% ylabel('Gain')
-% grid on
-% 
-% subplot 212
-% semilogx(f(bode_ind),180*Phase(bode_ind)/pi,'Color',Bode_color,'LineWidth',2)
-% hold on
-% xlabel('frequency [Hz]')
-% ylabel('Phase [deg]')
-% grid on
+bode_ind = find((0.1<f)&(f<10));
+
+
+figure(132)
+subplot 211
+semilogx(f(bode_ind),20*log10(Gain(bode_ind)),'Color',Bode_color,'LineWidth',2)
+hold on
+ylabel('Gain')
+grid on
+
+subplot 212
+semilogx(f(bode_ind),180*Phase(bode_ind)/pi,'Color',Bode_color,'LineWidth',2)
+hold on
+xlabel('frequency [Hz]')
+ylabel('Phase [deg]')
+grid on
 
 % Super title (over subplots):
 % ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0  1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 % text(0.55, 0.98,'Bode plot ','HorizontalAlignment','center','VerticalAlignment', 'top','FontSize',15)
-% save('f','f')
-% save('Y1','Y1')
-% save('Y2','Y2')
-% save('Yu','Yu')
+save('ExperimentData\f','f')
+save('ExperimentData\Y1','Y1')
+save('ExperimentData\Y2','Y2')
+save('ExperimentData\Yu','Yu')
 
 
-
+figure
+plot(sample_diff,'.')
 % this_freq = output_line(5,5);
 % start_ind = find(f>this_freq/2, 1, 'first');
 % 

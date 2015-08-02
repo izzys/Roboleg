@@ -1,7 +1,0 @@
-V1. Dump the data to another folder "ExperimentData" --> Analyse_output   line 168
-2. Improve the GUI :: Add indicator if the SERIAL is busy
-3. In case you chose to use GUIDE {GUI BUILDER} make sure you import all the callback functions. {CB_XXX.m}
-V4. Plotting results --> convert time to seconds, and angles to degrees. (line 58-59) & CPR THING 
-
-5. Arduino is budy
-6. one button of stop/start

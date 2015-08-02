@@ -1,5 +1,7 @@
+#include <SD.h>
+
 //#include <LegMotorsEncodersV2_1.ino>
-//#include <MsTimer2.h>   /// TODO: timer2 -> timer1
+#include <MsTimer2.h>   /// TODO: timer2 -> timer1
 #include <TimerOne.h>
 //#include "IEEE754tools.h"
 #include "LegMotorsEncoders.h"
@@ -13,20 +15,23 @@
 /*=========================================*/
 float  firstfreq = 0.1;//first frequency
 float  lastfreq = 10;//last frequenc 
-unsigned long lasttime = 120e6;  // in micro seconds
+unsigned long lasttime = 60*4e3;  // in millis seconds
 short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
-short Loop_freqency = 100;// Set here control cycle frequency (Hz)
-short Sample_freqency = 100 ; // Set here sample frequency (Hz)
+short Loop_freqency = 200;// Set here control cycle frequency (Hz)
+//short Sample_freqency = 10 ; // Set here sample frequency (Hz)
+
+// Scitech defenition
+bool isLogaritmic = false; // default:: linner
 /*=========================================*/
 
 
 boolean running;//used to test if motor is running
 
-unsigned int Control_Period = 1e6 / Loop_freqency; // Control cycle period (micro-seconds) 
-unsigned int Sample_Period  = 1e6 / Sample_freqency; // Sample period (micro-seconds)      
-volatile int Control_loop_counter;
-volatile int Control_loop_counter_max;
+unsigned int Loop_Period = 1e6 / Loop_freqency; // Control cycle period (micro-seconds) 
+//unsigned int Sample_Period  = 1e6 / Sample_freqency; // Sample period (micro-seconds)      
+volatile int Loop_counter;
+volatile int Loop_counter_max;
 
 unsigned long T ; //Time
 
@@ -39,7 +44,7 @@ long enc1;
 long enc2;
 short comm;
 short comm_output;
-float freq;
+float freq = 0;
 
 LegMotorsEncoders LME;
 
@@ -61,14 +66,9 @@ void setup()
   LME.ResetEncoder(3);
   LME.ResetEncoder(4);
 
-
-
-
-  Timer1.initialize(Control_Period);
-  
-
-  //Timer1.set(Control_Period, LoopAction);                                      /// TODO: timer2 -> timer1
-  Control_loop_counter_max = (short) ( Loop_freqency / Sample_freqency );
+  Timer1.initialize(Loop_Period);
+//  MsTimer2::set(Loop_Period, LoopAction);
+ // Loop_counter_max = (short) ( Loop_freqency / Sample_freqency );
   
 
 }
@@ -87,14 +87,15 @@ void loop(){//Send the motor commands to move each time through this loop
     if (first_loop){
 
       Serial.println("starting......");
-      Control_loop_counter = 0;
+      Loop_counter = 0;
       T = 0;
       first_loop = 0; 
-      sync_time = micros();    /// TODO: mili -> micro
+      sync_time = millis(); 
       
-   //   Timer1.start();                        /// TODO: timer2 -> timer1
+
    
-      Timer1.attachInterrupt(LoopAction);
+     Timer1.attachInterrupt(LoopAction);
+    //  MsTimer2::start();
     }
     
     interrupts();
@@ -107,8 +108,8 @@ void loop(){//Send the motor commands to move each time through this loop
       if (first_stop) {
         
         Timer1.detachInterrupt();
-        
-       // Timer1.stop();              /// TODO: timer2 -> timer1
+      //  MsTimer2::stop();
+
         
         LME.M1_COAST();
         LME.M2_COAST();
@@ -136,26 +137,27 @@ void LoopAction() {
       return;
     }
     
-    enc1 =  LME.ReadEncoder(1);//Read the encoders and stardardize positve/negative values (?)
+    enc1 =  LME.ReadEncoder(1);
     enc2 = -LME.ReadEncoder(2);
-    
+      
     //Set the time for each iteration through the motor commands
-    T =  micros() - sync_time ;    /// TODO: mili -> micro
+    T =  millis() - sync_time ;   
     
-    //The sin wave to send;
-    freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-    //sin_wave = sin(2*PI*freq*T*1e-6);
-    float N=log(lastfreq/firstfreq)/log(2);
-//    Serial.println("HEREREREEEEREERERERRRREREREERRERE");
-//float test=pow(2,3.13345);
-// Serial.println(test);
-    float R=N/(lasttime*1e-6);
-   //1 Serial.println(lasttime);
-    sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-6))/(R*log(2)) )    );
+
+    // Sending sine signal
+    if(isLogaritmic)
+    {
+      float N=log(lastfreq/firstfreq)/log(2);
+      float R=N/(lasttime*1e-3);
+      sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-3))/(R*log(2)) )    );
+    }else{
+      freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
+      sin_wave = sin(2*PI*freq*T*1e-3); // linner wave
+    }
+
     comm = (short) (amplitude*sin_wave); //and set the motor command to that point
 
     //If the leg gets to high-->emergency stop
-   
     if((enc2)>3000 || (enc2<-3000) || abs(enc1-enc2)>3600)     // 3600 = 90*; 3000 = 75*
     {
       Serial.println("emergency stop");
@@ -178,13 +180,13 @@ void LoopAction() {
       LME.M2_BWD(comm_output);
     }
     
-    Control_loop_counter++;
-    
-    if ( Control_loop_counter >= Control_loop_counter_max) {
+  //  Loop_counter++;
+ //   if ( Loop_counter >= Loop_counter_max) {
 
       Sample_Angle_and_Send();
-      Control_loop_counter = 0;
-    }
+      
+ //     Loop_counter = 0;
+  //  }
   
   
 
@@ -206,9 +208,10 @@ void Sample_Angle_and_Send() //Based on sample frequency set above, send data to
       Serial.print("   ");
       Serial.print(comm);
       Serial.print("   ");
-      Serial.print(T);
-      Serial.print("   ");
-      Serial.println(freq);
+      Serial.println(T);
+      
+//      Serial.print("   ");
+//      Serial.println(freq);
       
       break;
 
@@ -247,4 +250,4 @@ void serialEvent(){ //Receive Serial data from MATLAB
     }
   }
 }
-
+ 
