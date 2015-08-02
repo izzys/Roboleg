@@ -13,14 +13,14 @@
 /*=========================================*/
 float  firstfreq = 0.1;//first frequency
 float  lastfreq = 10;//last frequenc 
-unsigned long lasttime = 60*1e3;  // in millis seconds
+unsigned long lasttime = 60*4e3;  // in millis seconds
 short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
 short Loop_freqency = 200;// Set here control cycle frequency (Hz)
 //short Sample_freqency = 10 ; // Set here sample frequency (Hz)
 
 // Scitech defenition
-bool isLogaritmic = true; // default:: linner
+bool isLogaritmic = false; // default:: linner
 /*=========================================*/
 
 
