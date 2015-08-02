@@ -1,7 +1,7 @@
 % set_GUI:
 global h out_index Sample_frequency out save_data load_previous_data
 %global h Freq__BOX Amp__BOX Sample_Duration_period_BOX Sine_PLOT Furier_PLOT out_index Sample_frequency out save_data Save_Data_checkbox
-set(0,'DefaultFigureWindowStyle','docked')
+set(0,'DefaultFigureWindowStyle','normal')
 save_data = 1;
 load_previous_data = 0;
 % Freq_TEXT = uicontrol('Style','text', 'Units', 'Normal', ...
