@@ -72,7 +72,7 @@ data = iddata(Delta,uvec,Ts);
 
 
 
-TFEST_sys = tfest(data,4 ,2) ;
+TFEST_sys = tfest(data,4 ,2) 
 
 [mag,phase] = bode(TFEST_sys,f(bode_ind)*2*pi);
 
@@ -90,5 +90,13 @@ subplot 313
 title correlation
 % semilogx(tvec1,R)
 
+optCVA = n4sidOptions('Focus','simulation','Display','on','N4weight','auto');
+% optSSARX = n4sidOptions('Focus','prediction','Display','on','N4weight','SSARX');
+% optMOESP = n4sidOptions('Focus','simulation','Display','on','N4weight','MOESP');
+sysCVA = n4sid(data,4,'Ts',0,optCVA)
+% sysSSARX = n4sid(data,4,'Ts',0,optSSARX)
+% sysMOESP = n4sid(data,4,'Ts',0,optMOESP)
+compare(data, sysCVA, TFEST_sys);
+%ident
 
-ident
+step(sysCVA,TFEST_sys)
