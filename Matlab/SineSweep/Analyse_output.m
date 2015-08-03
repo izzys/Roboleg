@@ -68,7 +68,7 @@ legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
 
 % Furier Analysis:
 sample_diff = diff(tvec);
-Tmean = mean(sample_diff)
+Tmean = mean(sample_diff);
 tvar = std(sample_diff);
 Fs = 1/Tmean;
 L = length(tvec);
@@ -129,13 +129,14 @@ Phase = filtfilt(b,a,Phase);
 
 bode_ind = find((0.1<f)&(f<10));
 
-
 figure(132)
 subplot 211
+title('Bode Plot of the Data')
 semilogx(f(bode_ind),20*log10(Gain(bode_ind)),'Color',Bode_color,'LineWidth',2)
 hold on
 ylabel('Gain')
 grid on
+
 
 subplot 212
 semilogx(f(bode_ind),180*Phase(bode_ind)/pi,'Color',Bode_color,'LineWidth',2)
@@ -145,7 +146,30 @@ ylabel('Phase [deg]')
 grid on
 
 
+%% system identification function [ create iddada object ]
+poles = 4;
+zeros = 2;
+dataStruct = iddata(Delta,uvec,Tmean);
+timeRange = 0:Tmean:max(tvec);
 
+sys = tfest(dataStruct,poles ,zeros) % H(s)
+sysStimulate = lsim(sys,uvec,timeRange);
+
+% draw
+% Insight: If the plots match --> Transfer function is pretty accurate
+figure
+plot(timeRange,sysStimulate, 'r');
+hold on
+plot(timeRange,Delta, '-b');
+title('Transfer Function  vs. Actual Data')
+legend('Actual Output Data', 'Transfer Function Output')
+
+% figure
+% plot(tvec,Delta)
+% hold on 
+% plot(tvec, sys1(tvec))
+
+%%
 % Super title (over subplots):
 % ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0  1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 % text(0.55, 0.98,'Bode plot ','HorizontalAlignment','center','VerticalAlignment', 'top','FontSize',15)
