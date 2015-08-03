@@ -11,9 +11,9 @@
 
 // User defined parameters:
 /*=========================================*/
-float  firstfreq = 0.1;//first frequency
+float  firstfreq = 0.01;//first frequency
 float  lastfreq = 10;//last frequenc 
-unsigned long lasttime = 60*4e3;  // in millis seconds
+unsigned long lasttime = 60*4e6;  // in micro seconds
 short amplitude = 50; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
 short Loop_freqency = 200;// Set here control cycle frequency (Hz)
@@ -88,7 +88,7 @@ void loop(){//Send the motor commands to move each time through this loop
       Loop_counter = 0;
       T = 0;
       first_loop = 0; 
-      sync_time = millis(); 
+      sync_time = micros(); 
       
 
    
@@ -139,17 +139,17 @@ void LoopAction() {
     enc2 = -LME.ReadEncoder(2);
       
     //Set the time for each iteration through the motor commands
-    T =  millis() - sync_time ;   
+    T =  micros() - sync_time ;   
     
     // Sending sine signal
     if(isLogaritmic)
     {
       float N=log(lastfreq/firstfreq)/log(2);
-      float R=N/(lasttime*1e-3);
-      sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-3))/(R*log(2)) )    );
+      float R=N/(lasttime*1e-6);
+      sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-6))/(R*log(2)) )    );
     }else{
       freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-      sin_wave = sin(2*PI*freq*T*1e-3); // linner wave
+      sin_wave = sin(2*PI*freq*T*1e-6); // linner wave
     }
 
     comm = (short) (amplitude*sin_wave); //and set the motor command to that point
