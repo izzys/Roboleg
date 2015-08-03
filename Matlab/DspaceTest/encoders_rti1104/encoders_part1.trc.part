@@ -1,0 +1,333 @@
+-- ******** Model variables ***************************************************
+
+group "Model Root"
+{
+ flags: COLLAPSED
+}
+	group "Gain" -- block-group
+	{
+	 block: "Gain"
+	 desc:  ""
+	 flags: BLOCK|COLLAPSED
+	}
+		p_0_encoders_uint8_T_2[0]
+		{
+		 type:    uint(8)*
+		 alias:   "Out1"
+		 desc:    "Uniform Fixed-Point"
+		 scale:   [2^-7, 0.0]
+		 bitmask: 0:7
+		 flags:   OUTPUT|READONLY
+		}
+		p_1_encoders_uint8_T_1[0]
+		{
+		 type:    uint(8)*
+		 alias:   "Gain"
+		 desc:    "Uniform Fixed-Point"
+		 scale:   [2^-7, 0.0]
+		 bitmask: 0:7
+		 flags:   PARAM
+		}
+
+
+	endgroup -- block-group "Gain"
+
+	group "Sine Wave" -- block-group
+	{
+	 block: "Sin"
+	 desc:  ""
+	 flags: BLOCK|COLLAPSED
+	}
+		p_0_encoders_real_T_0[0]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Out1"
+		 desc:    ""
+		 flags:   OUTPUT|READONLY
+		}
+		p_1_encoders_real_T_0[0]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Amplitude"
+		 flags:   PARAM
+		}
+		p_1_encoders_real_T_0[1]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Bias"
+		 flags:   PARAM
+		}
+		p_1_encoders_real_T_0[2]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Frequency"
+		 flags:   PARAM
+		}
+		p_1_encoders_real_T_0[3]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Phase"
+		 flags:   PARAM
+		}
+
+
+	endgroup -- block-group "Sine Wave"
+
+	group "Step" -- block-group
+	{
+	 block: "Step"
+	 desc:  ""
+	 flags: BLOCK|COLLAPSED
+	}
+		p_0_encoders_real_T_0[5]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Out1"
+		 desc:    ""
+		 flags:   OUTPUT|READONLY
+		}
+		p_1_encoders_real_T_0[5]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Time"
+		 flags:   PARAM
+		}
+		p_1_encoders_real_T_0[6]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Before"
+		 flags:   PARAM
+		}
+		p_1_encoders_real_T_0[7]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "After"
+		 flags:   PARAM
+		}
+
+
+	endgroup -- block-group "Step"
+
+  
+  
+	group "Compare\nTo Constant" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+		p_0_encoders_boolean_T_1[0]
+		{
+		 type:    uint(8)*
+		 alias:   "y"
+		 desc:    ""
+		 range:   < 0 ; 1 >
+		 bitmask: 0x01
+		 flags:   OUTPUT|READONLY
+		}
+
+		group "Constant" -- block-group
+		{
+		 block: "Constant"
+		 desc:  ""
+		 flags: BLOCK|COLLAPSED
+		}
+			-- Skipping output Out1
+			p_1_encoders_real_T_0[4]
+			{
+			 type:    flt(64,IEEE)*
+			 alias:   "Value"
+			 flags:   PARAM
+			}
+
+
+		endgroup -- block-group "Constant"
+
+		group "Compare" -- block-group
+		{
+		 block: "RelationalOperator"
+		 desc:  ""
+		 flags: BLOCK|COLLAPSED
+		}
+			p_0_encoders_boolean_T_1[0]
+			{
+			 type:    uint(8)*
+			 alias:   "Out1"
+			 desc:    ""
+			 range:   < 0 ; 1 >
+			 bitmask: 0x01
+			 flags:   OUTPUT|READONLY
+			}
+
+
+		endgroup -- block-group "Compare"
+
+
+
+	endgroup -- subsystem-group "Compare\nTo Constant"
+  
+  
+	group "DS1104BIT_OUT_C0" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+
+	endgroup -- subsystem-group "DS1104BIT_OUT_C0"
+  
+  
+	group "DS1104ENC_POS_C1" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+		p_0_encoders_real_T_0[1]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Enc position"
+		 desc:    "No data (unused channel) "
+		 flags:   OUTPUT|READONLY
+		}
+		p_0_encoders_real_T_0[2]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Enc delta position"
+		 desc:    "No data (unused channel) "
+		 flags:   OUTPUT|READONLY
+		}
+
+	endgroup -- subsystem-group "DS1104ENC_POS_C1"
+  
+  
+	group "DS1104ENC_POS_C2" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+		p_0_encoders_real_T_0[3]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Enc position"
+		 desc:    "No data (unused channel) "
+		 flags:   OUTPUT|READONLY
+		}
+		p_0_encoders_real_T_0[4]
+		{
+		 type:    flt(64,IEEE)*
+		 alias:   "Enc delta position"
+		 desc:    "No data (unused channel) "
+		 flags:   OUTPUT|READONLY
+		}
+
+	endgroup -- subsystem-group "DS1104ENC_POS_C2"
+  
+  
+	group "DS1104ENC_SETUP" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+
+	endgroup -- subsystem-group "DS1104ENC_SETUP"
+  
+  
+	group "DS1104ENC_SET_POS_C1" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+
+	endgroup -- subsystem-group "DS1104ENC_SET_POS_C1"
+  
+  
+	group "DS1104ENC_SET_POS_C2" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+
+	endgroup -- subsystem-group "DS1104ENC_SET_POS_C2"
+  
+  
+	group "Detect\nIncrease" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+		p_0_encoders_boolean_T_1[1]
+		{
+		 type:    uint(8)*
+		 alias:   "Y"
+		 desc:    ""
+		 range:   < 0 ; 1 >
+		 bitmask: 0x01
+		 flags:   OUTPUT|READONLY
+		}
+
+		group "FixPt\nRelational\nOperator" -- block-group
+		{
+		 block: "RelationalOperator"
+		 desc:  ""
+		 flags: BLOCK|COLLAPSED
+		}
+			p_0_encoders_boolean_T_1[1]
+			{
+			 type:    uint(8)*
+			 alias:   "Out1"
+			 desc:    ""
+			 range:   < 0 ; 1 >
+			 bitmask: 0x01
+			 flags:   OUTPUT|READONLY
+			}
+
+
+		endgroup -- block-group "FixPt\nRelational\nOperator"
+
+		group "Delay Input1" -- block-group
+		{
+		 block: "UnitDelay"
+		 desc:  "\nStore in Global RAM"
+		 flags: BLOCK|COLLAPSED
+		}
+			p_0_encoders_real_T_0[6]
+			{
+			 type:    flt(64,IEEE)*
+			 alias:   "Out1"
+			 desc:    ""
+			 flags:   OUTPUT|READONLY
+			}
+			p_1_encoders_real_T_0[8]
+			{
+			 type:    flt(64,IEEE)*
+			 alias:   "InitialCondition"
+			 flags:   PARAM
+			}
+
+
+		endgroup -- block-group "Delay Input1"
+
+
+
+	endgroup -- subsystem-group "Detect\nIncrease"
+  
+  
+	group "RTI Data" -- subsystem-group
+	{
+	 flags: COLLAPSED
+	 desc:  ""
+	}
+
+
+	endgroup -- subsystem-group "RTI Data"
+
+
+
+
+endgroup -- "Model Root"
