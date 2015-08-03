@@ -54,7 +54,7 @@ disp 'output done'
 % xlabel('Time [sec]')
 
 
-tvec = output_line(:,4)*1e-3;
+tvec = output_line(:,4)*1e-6;
 theta1 = output_line(:,1)*360/CPR; % TODO
 theta2 = output_line(:,2)*360/CPR;
 uvec = output_line(:,3); % PWM, Voltage, Command
@@ -69,7 +69,7 @@ legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
 % Furier Analysis:
 sample_diff = diff(tvec);
 Tmean = mean(sample_diff)
-
+tvar = std(sample_diff)
 Fs = 1/Tmean;
 L = length(tvec);
 
