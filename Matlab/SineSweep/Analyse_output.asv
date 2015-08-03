@@ -68,7 +68,7 @@ legend(h.Sine_PLOT,'Enc 1','Enc 2','command','Delta')
 
 % Furier Analysis:
 sample_diff = diff(tvec);
-Tmean = mean(sample_diff)
+Tmean = mean(sample_diff);
 tvar = std(sample_diff);
 Fs = 1/Tmean;
 L = length(tvec);
@@ -114,7 +114,7 @@ Phase_chopped = angle(Ycomm(1:bin))-angle(Ydelta(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
-[b,a] = butter(2,0.1,'low');
+[b,a] = butter(2,0.3,'low');
 Gain = filtfilt(b,a,Gain);
 Phase = filtfilt(b,a,Phase);
 
@@ -143,8 +143,6 @@ hold on
 xlabel('frequency [Hz]')
 ylabel('Phase [deg]')
 grid on
-
-
 
 % Super title (over subplots):
 % ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0  1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');

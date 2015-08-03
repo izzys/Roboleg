@@ -13,8 +13,8 @@
 /*=========================================*/
 float  firstfreq = 0.01;//first frequency
 float  lastfreq = 10;//last frequenc 
-unsigned long lasttime = 60*4e6;  // in millis seconds
-short amplitude = 50; 
+unsigned long lasttime = 60*2e6;  // in millis seconds
+short amplitude = 70; 
 boolean Initial_Linear_Position = 1; // Set here lonear motot inital position
 short Loop_freqency = 200;// Set here control cycle frequency (Hz)
 //short Sample_freqency = 10 ; // Set here sample frequency (Hz)
