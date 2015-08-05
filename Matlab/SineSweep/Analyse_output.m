@@ -110,7 +110,7 @@ Bode_color = [rand(1) rand(1) rand(1)];
 
 
 Gain = Yd./Yu;
-Phase_chopped = angle(Ycomm(1:bin))-angle(Ydelta(1:bin));
+Phase_chopped = angle(Ydelta(1:bin))-angle(Ycomm(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
@@ -127,7 +127,7 @@ Phase = filtfilt(b,a,Phase);
 % Gain = filter(b,a,Gain);
 % Phase = filter(b,a,Phase);
 
-bode_ind = find((0.1<f)&(f<10));
+bode_ind = find((0.1<f)&(f<10)); % Picking by range
 
 figure(132)
 subplot 211
@@ -152,22 +152,42 @@ zeros = 2;
 dataStruct = iddata(Delta,uvec,Tmean);
 timeRange = 0:Tmean:max(tvec);
 
-sys = tfest(dataStruct,poles ,zeros) % H(s)
-sysStimulate = lsim(sys,uvec,timeRange);
+TFest_sys = tfest(dataStruct,poles ,zeros) % H(s)
+sysStimulate = lsim(TFest_sys,uvec,timeRange);
 
 % draw
 % Insight: If the plots match --> Transfer function is pretty accurate
-figure
+figure(133)
 plot(timeRange,sysStimulate, 'r');
 hold on
 plot(timeRange,Delta, '-b');
 title('Transfer Function  vs. Actual Data')
-legend('Actual Output Data', 'Transfer Function Output')
+legend('Transfer Function Output','Actual Output Data')
 
-% figure
-% plot(tvec,Delta)
-% hold on 
-% plot(tvec, sys1(tvec))
+
+[Gain2,Phase2] = bode(TFest_sys,f(bode_ind)*2*pi);
+Gain2 = squeeze(Gain2);
+Phase2 = squeeze(Phase2);
+
+figure(132)
+subplot 211
+semilogx(f(bode_ind),20*log10(Gain2),'Color',Bode_color,'LineWidth',3,'LineStyle','--')
+
+subplot 212
+semilogx(f(bode_ind),Phase2,'Color',Bode_color,'LineWidth',3,'LineStyle','--')
+
+
+%% Save TFest to the right file
+org_path = previous_data_string;
+temp = strsplit(previous_data_string, '\');
+dirname = temp{end-1};
+path = strjoin(temp(1:end-1),'\');
+filename = ['\Tfest_' dirname];
+full_path = [path filename];
+
+% save
+disp(['Success! TFest Saved as ' filename]);
+save(full_path,'TFest_sys'); %%  save
 
 %%
 % Super title (over subplots):
