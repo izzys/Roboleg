@@ -1,5 +1,6 @@
 % set_GUI:
-global h out_index Sample_frequency out save_data load_previous_data
+global h out_index Sample_frequency out save_data load_previous_data CPR
+CPR = 14400;
 %global h Freq__BOX Amp__BOX Sample_Duration_period_BOX Sine_PLOT Furier_PLOT out_index Sample_frequency out save_data Save_Data_checkbox
 set(0,'DefaultFigureWindowStyle','normal')
 save_data = 1;
