@@ -114,7 +114,7 @@ Phase_chopped = angle(Ydelta(1:bin))-angle(Ycomm(1:bin));
 
 Phase = wrapToPi(Phase_chopped);
 
-[b,a] = butter(2,0.1,'low');
+[b,a] = butter(2,0.2,'low');
 Gain = filtfilt(b,a,Gain);
 Phase = filtfilt(b,a,Phase);
 

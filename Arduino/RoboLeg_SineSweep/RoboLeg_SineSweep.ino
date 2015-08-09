@@ -108,7 +108,7 @@ void loop(){//Send the motor commands to move each time through this loop
         Timer1.detachInterrupt();
       //  MsTimer2::stop();
 
-        
+        // Stop motors
         LME.M1_COAST();
         LME.M2_COAST();
 
@@ -149,7 +149,7 @@ void LoopAction() {
       sin_wave=sin(2*PI*( firstfreq*(-1+pow(2,R*T*1e-6))/(R*log(2)) )    );
     }else{
       freq = 0.5*(lastfreq-firstfreq)*T/lasttime + firstfreq;
-      sin_wave = sin(2*PI*freq*T*1e-6); // linner wave
+      sin_wave = 40;//sin(2*PI*freq*T*1e-6); // linner wave
     }
 
     comm = (short) (amplitude*sin_wave); //and set the motor command to that point
