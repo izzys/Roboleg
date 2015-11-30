@@ -1,0 +1,1 @@
+-- call "C:\Program Files\dSPACE RCPHIL 2014-B\Compiler\PPCTools\BIN\lnkppc.exe"  -K0 -QmsA0314 -QmeA0307 -QmeA0329 -m..\Psensor.map -o ..\Psensor.ppc -c _tmp_Psensor.lk 
